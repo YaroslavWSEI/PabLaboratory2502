@@ -17,10 +17,7 @@ public class MemoryCustomerService : ICustomerService
                 Phone = "123456789",
                 AddressId = 1,
             },
-            new Customer()
-            {
-                id =2,
-            }
+            
 
         ];
     }
