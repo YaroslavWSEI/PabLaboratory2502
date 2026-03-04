@@ -12,7 +12,7 @@ public class MemoryCustomerService : ICustomerService
             {
                 id = 1,
                 FirstName = "Jan",
-                LastName = "Kow",
+                LastName = "Kow", 
                 Email = "yyaeadasasdaas@wsei.edu.pl",
                 Phone = "123456789",
                 AddressId = 1,
