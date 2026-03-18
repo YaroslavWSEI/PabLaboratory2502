@@ -1,4 +1,6 @@
-﻿namespace AppCore.Dto;
+﻿using AppCore.Models;
+
+namespace AppCore.Dto;
 
 using AppCore.Enums;
 
@@ -30,6 +32,13 @@ public record PersonDto : ContactBaseDto
     public DateTime? BirthDate { get; init; }
     public Gender Gender { get; init; }
     public Guid? EmployerId { get; init; }
+
+    public static PersonDto FromEntity(Person p) => new()
+    {
+        Id = p.Id,
+        FirstName = p.FirstName,
+        LastName = p.LastName
+    };
 }
 
 public record CreatePersonDto(

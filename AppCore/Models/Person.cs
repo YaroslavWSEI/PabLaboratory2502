@@ -4,6 +4,7 @@ namespace AppCore.Models;
 
 public class Person : Contact
 {
+    
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
 
@@ -14,6 +15,8 @@ public class Person : Contact
 
     public Guid? EmployerId { get; set; }
     public Guid? OrganizationId { get; set; }
+    public Company? Employer { get; set; }
+    public object Organization { get; set; }
 
     public override string GetDisplayName()
         => $"{FirstName} {LastName}";

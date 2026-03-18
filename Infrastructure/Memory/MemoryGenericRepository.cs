@@ -7,7 +7,7 @@ namespace Infrastructure.Memory;
 public class MemoryGenericRepository<T> : IGenericRepositoryAsync<T>
     where T : EntityBase
 {
-    private readonly Dictionary<Guid, T> _data = new();
+    protected readonly Dictionary<Guid, T> _data = new();
 
     public Task<T?> FindByIdAsync(Guid id)
     {

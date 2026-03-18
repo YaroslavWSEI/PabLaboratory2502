@@ -2,6 +2,7 @@
 
 public class Company : Contact
 {
+    public Guid Id { get; set; } 
     public string Name { get; set; } = string.Empty;
     public string? NIP { get; set; }
     public string? REGON { get; set; }
