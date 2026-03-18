@@ -32,7 +32,7 @@ public record PersonDto : ContactBaseDto
     public DateTime? BirthDate { get; init; }
     public Gender Gender { get; init; }
     public Guid? EmployerId { get; init; }
-
+    public string FullName => $"{FirstName} {LastName}";
     public static PersonDto FromEntity(Person p) => new()
     {
         Id = p.Id,

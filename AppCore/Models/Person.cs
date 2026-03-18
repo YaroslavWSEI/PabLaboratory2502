@@ -17,7 +17,7 @@ public class Person : Contact
     public Guid? OrganizationId { get; set; }
     public Company? Employer { get; set; }
     public object Organization { get; set; }
-
+    public string FullName => $"{FirstName} {LastName}";
     public override string GetDisplayName()
         => $"{FirstName} {LastName}";
 }
