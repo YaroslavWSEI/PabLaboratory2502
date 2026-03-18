@@ -12,7 +12,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddAuthorization();
-        builder.Services.AddSingleton<ICustomerService,MemoryGenericRepository>();
+        builder.Services.AddSingleton<ICustomerService,MemoryCustomerService>();
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
