@@ -6,7 +6,7 @@ using AppCore.Enums;
 
 public abstract record ContactBaseDto
 {
-    public Guid Id { get; init; }
+    public Guid Id { get; set; }
     public string Email { get; init; }
     public string Phone { get; init; }
     public AddressDto Address { get; init; }
@@ -54,6 +54,7 @@ public record CreatePersonDto(
 );
 
 public record UpdatePersonDto(
+    Guid Id,   // 👈 ДОБАВЬ ЭТО
     string? FirstName,
     string? LastName,
     string? Email,

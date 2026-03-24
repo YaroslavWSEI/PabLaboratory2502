@@ -1,6 +1,54 @@
 @WebApi_HostAddress = http://localhost:5204
 
-GET {{WebApi_HostAddress}}/weatherforecast/
+### 🔹 GET все контакты
+GET {{WebApi_HostAddress}}/api/contacts
 Accept: application/json
 
 ###
+
+### 🔹 POST создать человека
+POST {{WebApi_HostAddress}}/api/contacts
+Content-Type: application/json
+
+{
+  "firstName": "Adam",
+  "lastName": "Nowak",
+  "email": "adam@wsei.edu.pl",
+  "phone": "48123456789",
+  "gender": 0,
+  "employerId": null,
+  "address": {
+    "street": "Testowa 1",
+    "city": "Warszawa",
+    "postalCode": "00-001",
+    "country": "PL"
+  }
+}
+
+###
+
+### 🔹 GET по ID (вставь GUID из POST!)
+GET {{WebApi_HostAddress}}/api/contacts/{46b24740-7ce5-4efb-b566-a67926585a21}
+Accept: application/json
+
+###
+
+### 🔹 PUT обновление
+PUT {{WebApi_HostAddress}}/api/contacts/{46b24740-7ce5-4efb-b566-a67926585a21}
+Content-Type: application/json
+
+{
+  "id": "{46b24740-7ce5-4efb-b566-a67926585a21}",
+  "firstName": "Jan",
+  "lastName": "Kowalski"
+}
+
+###
+
+### 🔹 ❌ тест ошибки (валидация)
+POST {{WebApi_HostAddress}}/api/contacts
+Content-Type: application/json
+
+{
+  "firstName": "123"
+}

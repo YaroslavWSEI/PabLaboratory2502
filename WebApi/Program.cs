@@ -15,6 +15,7 @@ public class Program
         builder.Services.AddSingleton<IPersonRepository, MemoryPersonRepository>();
         builder.Services.AddSingleton<IContactUnitOfWork, MemoryContactUnitOfWork>();
         builder.Services.AddSingleton<IPersonService, MemoryPersonService>();
+        
 
         builder.Services.AddControllers();
         builder.Services.AddOpenApi();

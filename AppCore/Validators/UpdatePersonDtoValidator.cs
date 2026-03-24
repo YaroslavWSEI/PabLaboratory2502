@@ -10,6 +10,9 @@ public class UpdatePersonDtoValidator : AbstractValidator<UpdatePersonDto>
     {
         _companyRepository = companyRepository;
 
+        RuleFor(x => x.Id)
+            .NotEmpty().WithMessage("Id jest wymagane.");
+
         RuleFor(x => x.FirstName)
             .NotEmpty().WithMessage("Imię jest wymagane.")
             .MaximumLength(100).WithMessage("Imię nie może przekraczać 100 znaków.")
@@ -23,17 +26,32 @@ public class UpdatePersonDtoValidator : AbstractValidator<UpdatePersonDto>
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email jest wymagany.")
             .EmailAddress().WithMessage("Nieprawidłowy format adresu email.")
-            .MaximumLength(200);
+            .MaximumLength(200).WithMessage("Email nie może przekraczać 200 znaków.");
 
         RuleFor(x => x.Phone)
             .Matches(@"^\+?[0-9\s\-]{7,15}$")
             .WithMessage("Nieprawidłowy format numeru telefonu.")
             .When(x => x.Phone is not null);
 
+        RuleFor(x => x.BirthDate)
+            .LessThan(DateTime.Today.AddYears(-18))
+            .WithMessage("Osoba musi mieć co najmniej 18 lat.")
+            .GreaterThan(DateTime.Today.AddYears(-120))
+            .WithMessage("Nieprawidłowa data urodzenia.")
+            .When(x => x.BirthDate.HasValue);
+
+        RuleFor(x => x.Gender)
+            .IsInEnum()
+            .WithMessage("Nieprawidłowa wartość płci.");
+
         RuleFor(x => x.EmployerId)
             .MustAsync(EmployerExistsAsync)
             .WithMessage("Wskazana firma nie istnieje.")
             .When(x => x.EmployerId.HasValue);
+
+        RuleFor(x => x.Address)
+            .SetValidator(new AddressDtoValidator())
+            .When(x => x.Address is not null);
     }
 
     private async Task<bool> EmployerExistsAsync(Guid? employerId, CancellationToken ct) =>

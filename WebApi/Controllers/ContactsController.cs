@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using AppCore.Models;
 using AppCore.Dto;
-using AppCore.Interfaces;
+
 namespace WebApi.Controllers;
 
 [ApiController]
-[Route("/api/contacts")]
+[Route("api/contacts")]
 public class ContactsController : ControllerBase
 {
     private readonly IPersonService _service;
@@ -35,16 +35,24 @@ public class ContactsController : ControllerBase
     public async Task<IActionResult> Create(CreatePersonDto dto)
     {
         var result = await _service.AddPerson(dto);
-        return CreatedAtAction(nameof(GetPerson), new { id = result.Id }, result);
+
+        if (result is not Person person)
+            return BadRequest();
+
+        return CreatedAtAction(nameof(GetPerson), new { id = person.Id }, person);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, UpdatePersonDto dto)
     {
-        if (id != dto.Id) return BadRequest("Id w URL i DTO muszą być takie same.");
-        var existing = await _service.GetById(id);
-        if (existing is null) return NotFound();
+        if (id != dto.Id)
+            return BadRequest("Id w URL i DTO muszą być takie same.");
+
         var updated = await _service.UpdatePerson(dto);
+
+        if (updated is null)
+            return NotFound();
+
         return Ok(updated);
     }
 }
