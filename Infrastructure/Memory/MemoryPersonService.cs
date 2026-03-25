@@ -2,7 +2,7 @@
 using AppCore.Interfaces;
 using AppCore.Models;
 using AppCore.ValueObjects;
-
+using AppCore.Exceptions;
 namespace Infrastructure.Memory;
 
 public class MemoryPersonService : IPersonService
@@ -112,5 +112,39 @@ public class MemoryPersonService : IPersonService
             return null;
 
         return PersonDto.FromEntity(entity);
+    }
+    public async Task<Note> AddNoteToPerson(Guid personId, CreateNoteDto noteDto)
+    {
+        var person = await _unitOfWork.Persons.FindByIdAsync(personId);
+    
+        if (person == null)
+            throw new ContactNotFoundException($"Person with id={personId} not found!");
+    
+        if (person.Notes == null)
+            person.Notes = new List<Note>();
+    
+        var note = new Note
+        {
+            Id = Guid.NewGuid(),
+            Content = noteDto.Content,
+            CreatedAt = DateTime.UtcNow
+        };
+    
+        person.Notes.Add(note);
+    
+        await _unitOfWork.Persons.UpdateAsync(person);
+        await _unitOfWork.SaveChangesAsync();
+    
+        return note;
+    }
+    
+    public async Task<PersonDto> GetPerson(Guid personId)
+    {
+        var person = await _unitOfWork.Persons.FindByIdAsync(personId);
+    
+        if (person == null)
+            throw new ContactNotFoundException($"Person with id={personId} not found!");
+    
+        return PersonDto.FromEntity(person);
     }
 }

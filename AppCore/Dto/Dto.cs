@@ -33,10 +33,12 @@ public record PersonDto : ContactBaseDto
     public Gender Gender { get; init; }
     public Guid? EmployerId { get; init; }
     public string FullName => $"{FirstName} {LastName}";
+    public List<Note> Notes { get; init; } = new();
     public static PersonDto FromEntity(Person p) => new()
     {
         Id = p.Id,
         FirstName = p.FirstName,
+        Notes = p.Notes ?? new List<Note>(),
         LastName = p.LastName
     };
 }
@@ -54,7 +56,7 @@ public record CreatePersonDto(
 );
 
 public record UpdatePersonDto(
-    Guid Id,   // 👈 ДОБАВЬ ЭТО
+    Guid Id,
     string? FirstName,
     string? LastName,
     string? Email,

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using AppCore.Models;
 using AppCore.Dto;
-
+using AppCore.Exceptions;
 namespace WebApi.Controllers;
 
 [ApiController]
@@ -54,5 +54,24 @@ public class ContactsController : ControllerBase
             return NotFound();
 
         return Ok(updated);
+    }
+    [HttpPost("{contactId:guid}/notes")]
+    public async Task<IActionResult> AddNote(
+        [FromRoute] Guid contactId,
+        [FromBody] CreateNoteDto dto)
+    {
+        var note = await _service.AddNoteToPerson(contactId, dto);
+    
+        return CreatedAtAction(
+            nameof(GetNotes),
+            new { contactId },
+            note);
+    }
+    [HttpGet("{contactId:guid}/notes")]
+    public async Task<IActionResult> GetNotes([FromRoute] Guid contactId)
+    {
+        var person = await _service.GetPerson(contactId);
+
+        return Ok(person.Notes);
     }
 }

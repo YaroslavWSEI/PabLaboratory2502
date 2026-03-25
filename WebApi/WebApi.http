@@ -11,7 +11,7 @@ POST {{WebApi_HostAddress}}/api/contacts
 Content-Type: application/json
 
 {
-  "firstName": "Adam",
+  "firstName": "RRR",
   "lastName": "Nowak",
   "email": "adam@wsei.edu.pl",
   "phone": "48123456789",
@@ -28,20 +28,21 @@ Content-Type: application/json
 ###
 
 ### 🔹 GET по ID (вставь GUID из POST!)
-GET {{WebApi_HostAddress}}/api/contacts/{46b24740-7ce5-4efb-b566-a67926585a21}
+GET {{WebApi_HostAddress}}/api/contacts/{22afc6a8-12da-4a19-a669-9a15b1cb55be}
 Accept: application/json
 
 ###
 
 ### 🔹 PUT обновление
-PUT {{WebApi_HostAddress}}/api/contacts/{46b24740-7ce5-4efb-b566-a67926585a21}
+PUT {{WebApi_HostAddress}}/api/contacts/{22afc6a8-12da-4a19-a669-9a15b1cb55be}
 Content-Type: application/json
 
 {
-  "id": "{46b24740-7ce5-4efb-b566-a67926585a21}",
+  "id": "{22afc6a8-12da-4a19-a669-9a15b1cb55be}",
   "firstName": "Jan",
   "lastName": "Kowalski"
 }
+
 
 ###
 
@@ -51,4 +52,27 @@ Content-Type: application/json
 
 {
   "firstName": "123"
+}
+### 🔹 POST добавить заметку
+POST {{WebApi_HostAddress}}/api/contacts/22afc6a8-12da-4a19-a669-9a15b1cb55be/notes
+Content-Type: application/json
+
+{
+  "content": "Moja pierwsza notatka"
+}
+
+###
+
+### 🔹 GET получить заметки
+GET {{WebApi_HostAddress}}/api/contacts/22afc6a8-12da-4a19-a669-9a15b1cb55be/notes
+Accept: application/json
+
+###
+
+### 🔹 ❌ тест ошибки (несуществующий GUID)
+POST {{WebApi_HostAddress}}/api/contacts/11111111-1111-1111-1111-111111111111/notes
+Content-Type: application/json
+
+{
+  "content": "Test error"
 }

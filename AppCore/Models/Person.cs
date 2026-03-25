@@ -20,4 +20,5 @@ public class Person : Contact
     public string FullName => $"{FirstName} {LastName}";
     public override string GetDisplayName()
         => $"{FirstName} {LastName}";
+    public List<Note> Notes { get; set; }
 }
