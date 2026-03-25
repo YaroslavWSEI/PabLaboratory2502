@@ -1,12 +1,12 @@
 @WebApi_HostAddress = http://localhost:5204
 
-### 🔹 GET все контакты
+### 🔹 GET contacts
 GET {{WebApi_HostAddress}}/api/contacts
 Accept: application/json
 
 ###
 
-### 🔹 POST создать человека
+### 🔹 POST create
 POST {{WebApi_HostAddress}}/api/contacts
 Content-Type: application/json
 
@@ -27,13 +27,13 @@ Content-Type: application/json
 
 ###
 
-### 🔹 GET по ID (вставь GUID из POST!)
+### 🔹 GET by ID
 GET {{WebApi_HostAddress}}/api/contacts/{22afc6a8-12da-4a19-a669-9a15b1cb55be}
 Accept: application/json
 
 ###
 
-### 🔹 PUT обновление
+### 🔹 PUT update
 PUT {{WebApi_HostAddress}}/api/contacts/{22afc6a8-12da-4a19-a669-9a15b1cb55be}
 Content-Type: application/json
 
@@ -46,14 +46,14 @@ Content-Type: application/json
 
 ###
 
-### 🔹 ❌ тест ошибки (валидация)
+### 🔹 ❌ validation error test
 POST {{WebApi_HostAddress}}/api/contacts
 Content-Type: application/json
 
 {
   "firstName": "123"
 }
-### 🔹 POST добавить заметку
+### 🔹 POST add note
 POST {{WebApi_HostAddress}}/api/contacts/22afc6a8-12da-4a19-a669-9a15b1cb55be/notes
 Content-Type: application/json
 
@@ -63,13 +63,13 @@ Content-Type: application/json
 
 ###
 
-### 🔹 GET получить заметки
+### 🔹 GET note
 GET {{WebApi_HostAddress}}/api/contacts/22afc6a8-12da-4a19-a669-9a15b1cb55be/notes
 Accept: application/json
 
 ###
 
-### 🔹 ❌ тест ошибки (несуществующий GUID)
+### 🔹 ❌ error test wrong ID
 POST {{WebApi_HostAddress}}/api/contacts/11111111-1111-1111-1111-111111111111/notes
 Content-Type: application/json
 
