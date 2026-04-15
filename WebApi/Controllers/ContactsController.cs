@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using AppCore.Models;
 using AppCore.Dto;
 using AppCore.Exceptions;
+using Microsoft.AspNetCore.Authorization;
+using AppCore.Authorization;
+
 namespace WebApi.Controllers;
 
 [ApiController]
@@ -15,8 +18,9 @@ public class ContactsController : ControllerBase
     {
         _service = service;
     }
-
+    
     [HttpGet]
+    [Authorize(Policy = nameof(CrmPolicies.ReadOnlyAccess))]
     public async Task<IActionResult> GetAllPersons(int page = 1, int size = 10)
     {
         var result = await _service.FindAllPeoplePaged(page, size);
@@ -24,6 +28,7 @@ public class ContactsController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [Authorize(Policy = nameof(CrmPolicies.ReadOnlyAccess))]
     public async Task<IActionResult> GetPerson(Guid id)
     {
         var dto = await _service.GetById(id);
@@ -32,6 +37,7 @@ public class ContactsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = nameof(CrmPolicies.SalesAccess))]
     public async Task<IActionResult> Create(CreatePersonDto dto)
     {
         var result = await _service.AddPerson(dto);
@@ -43,6 +49,7 @@ public class ContactsController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Policy = nameof(CrmPolicies.SalesAccess))]
     public async Task<IActionResult> Update(Guid id, UpdatePersonDto dto)
     {
         if (id != dto.Id)
@@ -55,19 +62,23 @@ public class ContactsController : ControllerBase
 
         return Ok(updated);
     }
+
     [HttpPost("{contactId:guid}/notes")]
+    [Authorize(Policy = nameof(CrmPolicies.SupportAccess))]
     public async Task<IActionResult> AddNote(
         [FromRoute] Guid contactId,
         [FromBody] CreateNoteDto dto)
     {
         var note = await _service.AddNoteToPerson(contactId, dto);
-    
+
         return CreatedAtAction(
             nameof(GetNotes),
             new { contactId },
             note);
     }
+
     [HttpGet("{contactId:guid}/notes")]
+    [Authorize(Policy = nameof(CrmPolicies.ReadOnlyAccess))]
     public async Task<IActionResult> GetNotes([FromRoute] Guid contactId)
     {
         var person = await _service.GetPerson(contactId);

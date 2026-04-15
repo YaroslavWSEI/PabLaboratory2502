@@ -14,11 +14,13 @@ public class Person : Contact
     public string? Position { get; set; }
 
     public Guid? EmployerId { get; set; }
+    public Organization? Organization { get; set; }
     public Guid? OrganizationId { get; set; }
     public Company? Employer { get; set; }
-    public object Organization { get; set; }
     public string FullName => $"{FirstName} {LastName}";
     public override string GetDisplayName()
-        => $"{FirstName} {LastName}";
+    {
+        return $"{FirstName} {LastName}";
+    }
     public List<Note> Notes { get; set; }
 }

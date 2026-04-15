@@ -3,6 +3,8 @@
 public class Company : Contact
 {
     public Guid Id { get; set; } 
+    public string? Industry { get; set; }
+    public string? Website { get; set; }
     public string Name { get; set; } = string.Empty;
     public string? NIP { get; set; }
     public string? REGON { get; set; }
@@ -11,5 +13,7 @@ public class Company : Contact
     public List<Person> Employees { get; set; } = new();
 
     public override string GetDisplayName()
-        => Name;
+    {
+        return Name ?? "Unknown Company";
+    }
 }

@@ -5,14 +5,19 @@ namespace Infrastructure.Memory;
 
 public class MemoryContactUnitOfWork : IContactUnitOfWork
 {
-    private readonly IPersonRepository _persons;
+    public IPersonRepository Persons { get; }
+    public ICompanyRepository Companies { get; }
+    public IOrganizationRepository Organizations { get; }
 
-    public MemoryContactUnitOfWork(IPersonRepository persons)
+    public MemoryContactUnitOfWork(
+        IPersonRepository personRepository, 
+        ICompanyRepository companyRepository, 
+        IOrganizationRepository organizationRepository)
     {
-        _persons = persons;
+        Persons = personRepository;
+        Companies = companyRepository;
+        Organizations = organizationRepository;
     }
-
-    public IPersonRepository Persons => _persons;
 
     public ValueTask DisposeAsync()
     {
