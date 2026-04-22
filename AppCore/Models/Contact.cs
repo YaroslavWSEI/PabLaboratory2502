@@ -9,7 +9,7 @@ public abstract class Contact : EntityBase
 
     public Address? Address { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
     public ContactStatus Status { get; set; }

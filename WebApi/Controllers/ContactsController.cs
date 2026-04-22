@@ -42,10 +42,14 @@ public class ContactsController : ControllerBase
     {
         var result = await _service.AddPerson(dto);
 
-        if (result is not Person person)
-            return BadRequest();
+        if (result == null)
+            return BadRequest("Nie udało się utworzyć osoby – sprawdź logikę serwisu.");
 
-        return CreatedAtAction(nameof(GetPerson), new { id = person.Id }, person);
+        return CreatedAtAction(
+            nameof(GetPerson),
+            new { id = result.Id },
+            result
+        );
     }
 
     [HttpPut("{id:guid}")]

@@ -18,48 +18,46 @@ public class PersonService : IPersonService
 
     public async Task<PagedResult<PersonDto>> FindAllPeoplePaged(int page, int size)
     {
-        // The UnitOfWork now calls the EF Repository under the hood
-        var pagedEntities = await _unitOfWork.Persons.FindPagedAsync(page, size);
-
-        var dtos = pagedEntities.Items
-            .Select(PersonDto.FromEntity)
-            .ToList();
+        var paged = await _unitOfWork.Persons.FindPagedAsync(page, size);
 
         return new PagedResult<PersonDto>(
-            dtos,
-            pagedEntities.TotalCount,
-            pagedEntities.Page,
-            pagedEntities.PageSize
+            paged.Items.Select(PersonDto.FromEntity).ToList(),
+            paged.TotalCount,
+            paged.Page,
+            paged.PageSize
         );
     }
 
-    public async Task<object?> AddPerson(CreatePersonDto personDto)
+    public async Task<PersonDto> AddPerson(CreatePersonDto dto)
     {
         var entity = new Person
         {
-            // Note: EF Core/Sqlite will handle Guid generation if configured, 
-            // but manual assignment is fine for specific business logic.
-            Id = Guid.NewGuid(), 
-            FirstName = personDto.FirstName,
-            LastName = personDto.LastName,
-            Email = personDto.Email,
-            Phone = personDto.Phone,
-            BirthDate = personDto.BirthDate,
-            Gender = personDto.Gender,
-            EmployerId = personDto.EmployerId,
+            Id = Guid.NewGuid(),
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
+            Email = dto.Email,
+            Phone = dto.Phone,
+            BirthDate = dto.BirthDate,
+            Gender = dto.Gender,
+            EmployerId = dto.EmployerId,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
-            Status = ContactStatus.Active, // Default status
-            Address = personDto.Address is not null
-                ? new Address
-                {
-                    Street = personDto.Address.Street,
-                    City = personDto.Address.City,
-                    ZipCode = personDto.Address.PostalCode,
-                    Country = Enum.Parse<Country>(personDto.Address.Country)
-                }
-                : null
+            Status = ContactStatus.Active,
+            Notes = new List<Note>()
         };
+
+        if (dto.Address != null)
+        {
+            entity.Address = new Address
+            {
+                Street = dto.Address.Street,
+                City = dto.Address.City,
+                ZipCode = dto.Address.PostalCode,
+                Country = Enum.TryParse<Country>(dto.Address.Country, true, out var c)
+                    ? c
+                    : Country.Unknown
+            };
+        }
 
         await _unitOfWork.Persons.AddAsync(entity);
         await _unitOfWork.SaveChangesAsync();
@@ -67,31 +65,35 @@ public class PersonService : IPersonService
         return PersonDto.FromEntity(entity);
     }
 
-    public async Task<object?> UpdatePerson(UpdatePersonDto personDto)
+    public async Task<PersonDto?> UpdatePerson(UpdatePersonDto dto)
     {
-        var entity = await _unitOfWork.Persons.FindByIdAsync(personDto.Id);
+        var entity = await _unitOfWork.Persons.FindByIdAsync(dto.Id);
+        if (entity == null) return null;
 
-        if (entity == null)
-            return null;
+        entity.FirstName = dto.FirstName ?? entity.FirstName;
+        entity.LastName = dto.LastName ?? entity.LastName;
+        entity.Email = dto.Email ?? entity.Email;
+        entity.Phone = dto.Phone ?? entity.Phone;
 
-        // Update properties
-        entity.FirstName = personDto.FirstName ?? entity.FirstName;
-        entity.LastName = personDto.LastName ?? entity.LastName;
-        entity.Email = personDto.Email ?? entity.Email;
-        entity.Phone = personDto.Phone ?? entity.Phone;
-        
-        if (personDto.BirthDate.HasValue) entity.BirthDate = personDto.BirthDate;
-        if (personDto.Gender.HasValue) entity.Gender = personDto.Gender.Value;
-        if (personDto.EmployerId.HasValue) entity.EmployerId = personDto.EmployerId;
+        if (dto.BirthDate.HasValue)
+            entity.BirthDate = dto.BirthDate;
 
-        if (personDto.Address != null)
+        if (dto.Gender.HasValue)
+            entity.Gender = dto.Gender.Value;
+
+        if (dto.EmployerId.HasValue)
+            entity.EmployerId = dto.EmployerId;
+
+        if (dto.Address != null)
         {
             entity.Address = new Address
             {
-                Street = personDto.Address.Street,
-                City = personDto.Address.City,
-                ZipCode = personDto.Address.PostalCode,
-                Country = Enum.Parse<Country>(personDto.Address.Country)
+                Street = dto.Address.Street,
+                City = dto.Address.City,
+                ZipCode = dto.Address.PostalCode,
+                Country = Enum.TryParse<Country>(dto.Address.Country, true, out var c)
+                    ? c
+                    : Country.Unknown
             };
         }
 
@@ -103,44 +105,43 @@ public class PersonService : IPersonService
         return PersonDto.FromEntity(entity);
     }
 
-    public async Task<object?> GetById(Guid id)
+    public async Task<PersonDto?> GetById(Guid id)
     {
         var entity = await _unitOfWork.Persons.FindByIdAsync(id);
         return entity == null ? null : PersonDto.FromEntity(entity);
     }
 
+    public async Task<PersonDto> GetPerson(Guid personId)
+    {
+        var entity = await _unitOfWork.Persons.FindByIdAsync(personId);
+
+        if (entity == null)
+            throw new ContactNotFoundException($"Person {personId} not found");
+
+        return PersonDto.FromEntity(entity);
+    }
+
     public async Task<Note> AddNoteToPerson(Guid personId, CreateNoteDto noteDto)
     {
         var person = await _unitOfWork.Persons.FindByIdAsync(personId);
-    
+
         if (person == null)
-            throw new ContactNotFoundException($"Person with id={personId} not found!");
-    
+            throw new ContactNotFoundException("Not found");
+
+        person.Notes ??= new List<Note>();
+
         var note = new Note
         {
             Id = Guid.NewGuid(),
             Content = noteDto.Content,
             CreatedAt = DateTime.UtcNow
         };
-    
-        // In EF Core, if Notes is a collection, ensure it's loaded 
-        // or just add to the collection if using lazy loading/include
-        person.Notes ??= new List<Note>();
+
         person.Notes.Add(note);
-    
+
         await _unitOfWork.Persons.UpdateAsync(person);
         await _unitOfWork.SaveChangesAsync();
-    
-        return note;
-    }
 
-    public async Task<PersonDto> GetPerson(Guid personId)
-    {
-        var person = await _unitOfWork.Persons.FindByIdAsync(personId);
-    
-        if (person == null)
-            throw new ContactNotFoundException($"Person with id={personId} not found!");
-    
-        return PersonDto.FromEntity(person);
+        return note;
     }
 }

@@ -2,6 +2,7 @@
 using Infrastructure.Context;
 using AppCore.Models;
 using AppCore.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Seeders;
 
@@ -18,9 +19,8 @@ public class ContactSeeder : IDataSeeder
 
     public async Task SeedAsync()
     {
-        if (_context.People.Any())
+        if (await _context.People.AnyAsync())
             return;
-
         var people = new List<Person>
         {
             new Person

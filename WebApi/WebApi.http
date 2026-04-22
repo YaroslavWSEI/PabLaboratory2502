@@ -1,5 +1,9 @@
 @WebApi_HostAddress = http://localhost:5204
+### 🔑 TOKEN (WSTAW PO LOGINIE)
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjkzQTdGRkRELTA1N0YtNDAyMS05QzY4LUZFMDY5NTFGRkE2NSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Imphbi5rb3dhbHNraUBjcm0ucGwiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9naXZlbm5hbWUiOiJKYW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zdXJuYW1lIjoiS293YWxza2kiLCJkZXBhcnRtZW50IjoiU2FsZXMiLCJzdGF0dXMiOiJBY3RpdmUiLCJqdGkiOiIzN2IzZDgzMS1hZTRiLTQ3NDYtYjQ5Ni1kMGU3ZTJmMjk4MmQiLCJpYXQiOiIxNzc2ODE3MzMzIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiU2FsZXNNYW5hZ2VyIiwiZXhwIjoxNzc2ODIwOTMzLCJpc3MiOiJJZGVpc0NybUFwaSIsImF1ZCI6IkNybUNsaWVudCJ9.k7tyULQVawojI7vFPgQtQb3WHUyFkp-wj3DRFDu3Ikk
 
+### 🧾 TEST ID (POBIERZ Z BAZY LUB LOGINU)
+@id = 75295f68-1f34-4649-925f-e29224df4233
 ### 🔐 LOGIN (JWT)
 POST {{WebApi_HostAddress}}/api/auth/login
 Content-Type: application/json
@@ -24,18 +28,19 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "firstName": "sss",
-  "lastName": "ssss",
-  "email": "adam@wsei.edu.pl",
-  "phone": "48123456789",
+  "firstName": "Jan",
+  "lastName": "Kowalski",
+  "email": "jan@test.pl",
+  "phone": "123456789",
   "gender": 0,
+  "status": 0,
   "employerId": null,
   "address": {
     "street": "Testowa 1",
     "city": "Warszawa",
     "postalCode": "00-001",
     "country": "PL",
-    "type": 1
+    "type": 0
   }
 }
 

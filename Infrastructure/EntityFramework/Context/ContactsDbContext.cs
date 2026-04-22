@@ -113,34 +113,28 @@ public class ContactsDbContext : IdentityDbContext<CrmUser, CrmRole, string>
         });
 
         // STEP B + D: Seed Contact (Company + Person razem!)
-        builder.Entity<Contact>().HasData(
-            new
-            {
-                Id = companyId,
-                Name = "WSEI",
-                Industry = "Edukacja",
-                Phone = "123567123",
-                Email = "biuro@wsei.edu.pl",
-                Website = "https://wsei.edu.pl",
-                Status = ContactStatus.Active,
-                CreatedAt = staticDate
-            },
-            new
-            {
-                Id = personId, 
-                FirstName = "Adam",
-                LastName = "Nowak",
-                Gender = Gender.Male,
-                Status = ContactStatus.Active,
-                Email = "adam@wsei.edu.pl",
-                Phone = "123456789",
-                BirthDate = new DateTime(2001, 1, 11),
-                Position = "Programista",
-                CreatedAt = staticDate,
-                UpdatedAt = staticDate,
-                EmployerId = companyId
-            }
-        );
+        builder.Entity<Person>().HasData(new Person
+        {
+            Id = personId,
+            FirstName = "Adam",
+            LastName = "Nowak",
+            Email = "adam@wsei.edu.pl",
+            Phone = "123456789",
+            Gender = Gender.Male,
+            Status = ContactStatus.Active,
+            BirthDate = new DateTime(2001, 1, 11),
+            EmployerId = companyId,
+            CreatedAt = staticDate,
+            UpdatedAt = staticDate
+        });
+        builder.Entity<Company>().HasData(new Company
+        {
+            Id = companyId,
+            Email = "biuro@wsei.edu.pl",
+            Phone = "123567123",
+            Status = ContactStatus.Active,
+            CreatedAt = staticDate
+        });
 
         // STEP C: Seed Admin User
         builder.Entity<CrmUser>().HasData(new CrmUser
@@ -152,6 +146,7 @@ public class ContactsDbContext : IdentityDbContext<CrmUser, CrmRole, string>
             NormalizedEmail = "ADMIN@WSEI.EDU.PL",
             FirstName = "Admin",
             LastName = "User",
+            FullName = "Admin User",
             Department = "IT",
             Status = SystemUserStatus.Active,
             CreatedAt = staticDate,

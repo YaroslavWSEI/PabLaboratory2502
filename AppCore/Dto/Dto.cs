@@ -1,92 +1,105 @@
-﻿using AppCore.Models;
+﻿    using AppCore.Models;
 
-namespace AppCore.Dto;
+    namespace AppCore.Dto;
 
-using AppCore.Enums;
+    using AppCore.Enums;
 
-public abstract record ContactBaseDto
-{
-    public Guid Id { get; set; }
-    public string Email { get; init; }
-    public string Phone { get; init; }
-    public AddressDto Address { get; init; }
-    public ContactStatus Status { get; init; }
-    public List<string> Tags { get; init; } = new();
-    public DateTime CreatedAt { get; init; }
-}
-
-public record AddressDto(
-    string Street,
-    string City,
-    string PostalCode,
-    string Country,
-    AddressType Type
-);
-
-// --- Person ---
-public record PersonDto : ContactBaseDto
-{
-    public string FirstName { get; init; }
-    public string LastName { get; init; }
-    public string? Position { get; init; }
-    public DateTime? BirthDate { get; init; }
-    public Gender Gender { get; init; }
-    public Guid? EmployerId { get; init; }
-    public string FullName => $"{FirstName} {LastName}";
-    public List<Note> Notes { get; init; } = new();
-    public static PersonDto FromEntity(Person p) => new()
+    public abstract record ContactBaseDto
     {
-        Id = p.Id,
-        FirstName = p.FirstName,
-        Notes = p.Notes ?? new List<Note>(),
-        LastName = p.LastName
-    };
-}
+        public Guid Id { get; set; }
+        public string Email { get; init; }
+        public string Phone { get; init; }
+        public AddressDto? Address { get; init; }
+        public ContactStatus Status { get; init; }
+        public List<string> Tags { get; init; } = new();
+        public DateTime CreatedAt { get; init; }
+    }
 
-public record CreatePersonDto(
-    string FirstName,
-    string LastName,
-    string Email,
-    string Phone,
-    string? Position,
-    DateTime? BirthDate,
-    Gender Gender,
-    Guid? EmployerId,
-    AddressDto? Address
-);
+    public record AddressDto(
+        string Street,
+        string City,
+        string PostalCode,
+        string Country,
+        AddressType Type
+    );
 
-public record UpdatePersonDto(
-    Guid Id,
-    string? FirstName,
-    string? LastName,
-    string? Email,
-    string? Phone,
-    string? Position,
-    DateTime? BirthDate,
-    Gender? Gender,
-    Guid? EmployerId,
-    AddressDto? Address,
-    ContactStatus? Status
-);
-// --- Contact Search ---
-public record ContactSearchDto(
-    string? Query,
-    ContactStatus? Status,
-    string? Tag,
-    string? ContactType,
-    int Page = 1,
-    int PageSize = 20
-);
+    // --- Person ---
+    public record PersonDto : ContactBaseDto
+    {
+        public string FirstName { get; init; }
+        public string LastName { get; init; }
+        public string? Position { get; init; }
+        public DateTime? BirthDate { get; init; }
+        public Gender Gender { get; init; }
+        public Guid? EmployerId { get; init; }
+        public string FullName => $"{FirstName} {LastName}";
+        public List<Note> Notes { get; init; } = new();
+        public static PersonDto FromEntity(Person p) => new()
+        {
+            Id = p.Id,
+            FirstName = p.FirstName,
+            LastName = p.LastName,
+            Email = p.Email,
+            Phone = p.Phone,
+            Gender = p.Gender,
+            EmployerId = p.EmployerId,
+            Address = p.Address is null ? null : new AddressDto(
+                p.Address.Street,
+                p.Address.City,
+                p.Address.ZipCode,
+                p.Address.Country.ToString(),
+                AddressType.Main
+            ),
+            Status = p.Status,
+            CreatedAt = p.CreatedAt,   // 🔴 TO MUSI BYĆ
+            Notes = p.Notes ?? new List<Note>()
+        };
+    }
 
-// --- PagedResult ---
-public record PagedResult<T>(
-    List<T> Items,
-    int TotalCount,
-    int Page,
-    int PageSize
-)
-{
-    public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
-    public bool HasNext => Page < TotalPages;
-    public bool HasPrevious => Page > 1;
-}
+    public record CreatePersonDto(
+        string FirstName,
+        string LastName,
+        string Email,
+        string Phone,
+        string? Position,
+        DateTime? BirthDate,
+        Gender Gender,
+        Guid? EmployerId,
+        AddressDto? Address
+    );
+
+    public record UpdatePersonDto(
+        Guid Id,
+        string? FirstName,
+        string? LastName,
+        string? Email,
+        string? Phone,
+        string? Position,
+        DateTime? BirthDate,
+        Gender? Gender,
+        Guid? EmployerId,
+        AddressDto? Address,
+        ContactStatus? Status
+    );
+    // --- Contact Search ---
+    public record ContactSearchDto(
+        string? Query,
+        ContactStatus? Status,
+        string? Tag,
+        string? ContactType,
+        int Page = 1,
+        int PageSize = 20
+    );
+
+    // --- PagedResult ---
+    public record PagedResult<T>(
+        List<T> Items,
+        int TotalCount,
+        int Page,
+        int PageSize
+    )
+    {
+        public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
+        public bool HasNext => Page < TotalPages;
+        public bool HasPrevious => Page > 1;
+    }

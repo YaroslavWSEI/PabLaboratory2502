@@ -1,67 +1,55 @@
-
 using AppCore.Interfaces;
-using AppCore.Repositories;
 using Infrastructure;
-using Infrastructure.Memory;
 using Infrastructure.Security;
-using Microsoft.AspNetCore.Mvc;
-namespace WebApi;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
-public class Program
+var builder = WebApplication.CreateBuilder(args);
+
+// =========================
+// MODULES
+// =========================
+builder.Services.AddContactsEfModule(builder.Configuration);
+
+// =========================
+// CONTROLLERS
+// =========================
+builder.Services.AddControllers();
+builder.Services.AddOpenApi();
+
+// =========================
+// JWT AUTH (TO BYŁO BRAKUJĄCE)
+// =========================
+
+// =========================
+// ERRORS
+// =========================
+
+builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
+builder.Services.AddProblemDetails();
+
+var app = builder.Build();
+
+// =========================
+// SEEDERS
+// =========================
+if (app.Environment.IsDevelopment())
 {
-    public static async Task Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
+    using var scope = app.Services.CreateScope();
+    var seeders = scope.ServiceProvider.GetServices<IDataSeeder>();
 
-        // Add services to the container.
-        builder.Services.AddContactsEfModule(builder.Configuration);
-        //builder.Services.AddSingleton<IPersonRepository, MemoryPersonRepository>();
-        //builder.Services.AddSingleton<IContactUnitOfWork, MemoryContactUnitOfWork>();
-        //builder.Services.AddSingleton<IPersonService, MemoryPersonService>();
-        builder.Services.AddSingleton<JwtSettings>();
-        builder.Services.AddJwt(new JwtSettings(builder.Configuration));
-        builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
-        builder.Services.AddProblemDetails();
-
-        builder.Services.AddControllers();
-        builder.Services.AddOpenApi();
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
-
-        var app = builder.Build();
-
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
-        if (app.Environment.IsDevelopment())
-        {
-            using var scope = app.Services.CreateScope();
-
-            var seeders = scope.ServiceProvider
-                .GetServices<IDataSeeder>()
-                .OrderBy(s => s.Order);
-
-            foreach (var seeder in seeders)
-            {
-                await seeder.SeedAsync();
-            }
-        }
-
-        app.UseHttpsRedirection();
-        app.UseExceptionHandler(); // ДО MapControllers
-        app.UseAuthorization();
-        app.MapControllers();
-        
-        
-
-        app.MapGet("/api/customers", ([FromServices] ICustomerService service, HttpContext httpContext) =>
-            {
-                return service.GetCustomers();
-            })
-            .WithName("GetCustomers");
-
-        app.Run();
-    }
+    foreach (var seeder in seeders.OrderBy(x => x.Order))
+        await seeder.SeedAsync();
 }
+// =========================
+// PIPELINE
+// =========================
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
