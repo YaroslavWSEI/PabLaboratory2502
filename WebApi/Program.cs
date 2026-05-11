@@ -34,6 +34,7 @@ var app = builder.Build();
 // =========================
 // SEEDERS
 // =========================
+
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
@@ -42,6 +43,7 @@ if (app.Environment.IsDevelopment())
     foreach (var seeder in seeders.OrderBy(x => x.Order))
         await seeder.SeedAsync();
 }
+
 // =========================
 // PIPELINE
 // =========================
@@ -53,3 +55,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+public partial class Program
+{
+} 
