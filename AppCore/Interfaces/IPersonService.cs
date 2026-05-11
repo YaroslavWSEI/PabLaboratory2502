@@ -15,4 +15,7 @@ public interface IPersonService
     Task<Note> AddNoteToPerson(Guid personId, CreateNoteDto noteDto);
 
     Task<PersonDto> GetPerson(Guid personId);
+    Task<List<PersonDto>> SearchPeople(string? emailDomain, Guid? organizationId);
+    Task<bool> AssignToOrganization(Guid personId, Guid organizationId);
+    Task DeleteContact(Guid id);
 }

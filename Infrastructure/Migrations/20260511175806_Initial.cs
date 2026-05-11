@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -87,6 +85,7 @@ namespace Infrastructure.Migrations
                     Type = table.Column<int>(type: "INTEGER", nullable: true),
                     FirstName = table.Column<string>(type: "TEXT", nullable: true),
                     LastName = table.Column<string>(type: "TEXT", nullable: true),
+                    Pesel = table.Column<string>(type: "TEXT", maxLength: 11, nullable: true),
                     BirthDate = table.Column<DateTime>(type: "date", nullable: true),
                     Gender = table.Column<string>(type: "TEXT", nullable: true),
                     Position = table.Column<string>(type: "TEXT", nullable: true),
@@ -279,16 +278,17 @@ namespace Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedAt", "DeactivatedAt", "Department", "Email", "EmailConfirmed", "FirstName", "FullName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Status", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "b2c3d4e5-f6a7-4b5c-9d8e-1f2a3b4c5d6e", 0, "700750e9-a61e-4b48-a569-92f78107a160", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "IT", "admin@wsei.edu.pl", true, "Admin", "Admin User", "User", false, null, "ADMIN@WSEI.EDU.PL", "ADMIN@WSEI.EDU.PL", "AQAAAAIAAYagAAAAEEa7xQkDQpeiKTZuQfskIdMF9ABqnYxQnvI+KLqDO5cH6s2lftDq+/Hwkr1pMQ/8Ag==", null, false, "44936f83-69f3-4b8a-825f-4c71bf0bffb6", 0, false, "admin@wsei.edu.pl" });
+                values: new object[] { "b2c3d4e5-f6a7-4b5c-9d8e-1f2a3b4c5d6e", 0, "f95d3081-22ca-4ab8-9ff7-2fa1aa4bc362", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "IT", "admin@wsei.edu.pl", true, "Admin", "Admin User", "User", false, null, "ADMIN@WSEI.EDU.PL", "ADMIN@WSEI.EDU.PL", "AQAAAAIAAYagAAAAEIJIhfZ7qIcwsIlblKlZa3YUoX2LZ4YYeaRMtSZywWGVdk5U1aTXZU1L+fQSCNsqAg==", null, false, "d17d9571-634a-4819-ad3a-1ee39404ace7", 0, false, "admin@wsei.edu.pl" });
 
             migrationBuilder.InsertData(
                 table: "Contact",
-                columns: new[] { "Id", "ContactType", "CreatedAt", "Email", "Phone", "Status", "UpdatedAt" },
-                values: new object[,]
-                {
-                    { new Guid("3d54091d-abc8-49ec-9590-93ad3ed5458f"), "Contact", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "adam@wsei.edu.pl", "123456789", "Active", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("516a34d7-ccfb-4f20-85f3-62bd0f3af271"), "Contact", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "biuro@wsei.edu.pl", "123567123", "Active", null }
-                });
+                columns: new[] { "Id", "BirthDate", "ContactType", "CreatedAt", "Email", "EmployerId", "FirstName", "Gender", "LastName", "OrganizationId", "Pesel", "Phone", "Position", "Status", "UpdatedAt" },
+                values: new object[] { new Guid("3d54091d-abc8-49ec-9590-93ad3ed5458f"), new DateTime(2001, 1, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Person", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "adam@wsei.edu.pl", null, "Adam", "Male", "Nowak", null, null, "123456789", null, "Active", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+
+            migrationBuilder.InsertData(
+                table: "Contact",
+                columns: new[] { "Id", "ContactType", "CreatedAt", "Email", "Industry", "KRS", "NIP", "Name", "Phone", "REGON", "Status", "UpdatedAt", "Website" },
+                values: new object[] { new Guid("6b88cbaa-d367-4e48-83c1-01c89942b5fc"), "Company", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "biuro@wsei.edu.pl", null, null, null, "", "123567123", null, "Active", null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

@@ -76,6 +76,11 @@ public class ContactsDbContext : IdentityDbContext<CrmUser, CrmRole, string>
             entity.Property(p => p.BirthDate).HasColumnType("date");
             entity.Property(p => p.Gender).HasConversion<string>();
             entity.Property(p => p.Status).HasConversion<string>();
+            entity.Property(p => p.Pesel)
+                .HasConversion(
+                    v => v!.Value,
+                    v => new Pesel(v))
+                .HasMaxLength(11);
         });
 
         // 4. Global Relationships
@@ -95,66 +100,65 @@ public class ContactsDbContext : IdentityDbContext<CrmUser, CrmRole, string>
     }
 
     private void SeedData(ModelBuilder builder)
+{
+    var companyId = Guid.Parse("516A34D7-CCFB-4F20-85F3-62BD0F3AF271");
+    var personId = Guid.Parse("3D54091D-ABC8-49EC-9590-93AD3ED5458F");
+    var adminRoleId = Guid.Parse("A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D").ToString();
+    var adminUserId = Guid.Parse("B2C3D4E5-F6A7-4B5C-9D8E-1F2A3B4C5D6E").ToString();
+    
+    var staticDate = new DateTime(2024, 1, 1);
+
+    // 1. СНАЧАЛА РОЛИ (нет зависимостей)
+    builder.Entity<CrmRole>().HasData(new CrmRole
     {
-        var companyId = Guid.Parse("516A34D7-CCFB-4F20-85F3-62BD0F3AF271");
-        var personId = Guid.Parse("3D54091D-ABC8-49EC-9590-93AD3ED5458F");
-        var adminRoleId = Guid.Parse("A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D").ToString();
-        var adminUserId = Guid.Parse("B2C3D4E5-F6A7-4B5C-9D8E-1F2A3B4C5D6E").ToString();
-        
-        var staticDate = new DateTime(2024, 1, 1);
+        Id = adminRoleId,
+        Name = "Administrator",
+        NormalizedName = "ADMINISTRATOR",
+        Description = "System Administrator"
+    });
 
-        // STEP A: Seed Roles (No dependencies)
-        builder.Entity<CrmRole>().HasData(new CrmRole
-        {
-            Id = adminRoleId,
-            Name = "Administrator",
-            NormalizedName = "ADMINISTRATOR",
-            Description = "System Administrator"
-        });
+    // 2. СНАЧАЛА КОМПАНИЯ (родитель для Person)
+    builder.Entity<Company>().HasData(new Company
+    {
+        Id = companyId,
+        Email = "biuro@wsei.edu.pl",
+        Phone = "123567123",
+        Status = ContactStatus.Active,
+        CreatedAt = staticDate
+    });
 
-        // STEP B + D: Seed Contact (Company + Person razem!)
-        builder.Entity<Person>().HasData(new Person
-        {
-            Id = personId,
-            FirstName = "Adam",
-            LastName = "Nowak",
-            Email = "adam@wsei.edu.pl",
-            Phone = "123456789",
-            Gender = Gender.Male,
-            Status = ContactStatus.Active,
-            BirthDate = new DateTime(2001, 1, 11),
-            EmployerId = companyId,
-            CreatedAt = staticDate,
-            UpdatedAt = staticDate
-        });
-        builder.Entity<Company>().HasData(new Company
-        {
-            Id = companyId,
-            Email = "biuro@wsei.edu.pl",
-            Phone = "123567123",
-            Status = ContactStatus.Active,
-            CreatedAt = staticDate
-        });
+    // 3. ТЕПЕРЬ PERSON (зависит от CompanyId)
+    builder.Entity<Person>().HasData(new Person
+    {
+        Id = personId,
+        FirstName = "Adam",
+        LastName = "Nowak",
+        Email = "adam@wsei.edu.pl",
+        Phone = "123456789",
+        Gender = Gender.Male,
+        Status = ContactStatus.Active,
+        BirthDate = new DateTime(2001, 1, 11),
+        //EmployerId = companyId, // Теперь компания существует в БД, ошибки не будет
+        CreatedAt = staticDate,
+        UpdatedAt = staticDate
+    });
 
-        // STEP C: Seed Admin User
-        builder.Entity<CrmUser>().HasData(new CrmUser
-        {
-            Id = adminUserId,
-            UserName = "admin@wsei.edu.pl",
-            NormalizedUserName = "ADMIN@WSEI.EDU.PL",
-            Email = "admin@wsei.edu.pl",
-            NormalizedEmail = "ADMIN@WSEI.EDU.PL",
-            FirstName = "Admin",
-            LastName = "User",
-            FullName = "Admin User",
-            Department = "IT",
-            Status = SystemUserStatus.Active,
-            CreatedAt = staticDate,
-            EmailConfirmed = true,
-            PasswordHash = new PasswordHasher<CrmUser>().HashPassword(null!, "Admin123!")
-        });
-
-        // STEP D: Seed Person (Child - depends on CompanyId)
-       
-    }
+    // 4. ТЕПЕРЬ ADMIN USER (зависит от ролей/контактов, если есть связи)
+    builder.Entity<CrmUser>().HasData(new CrmUser
+    {
+        Id = adminUserId,
+        UserName = "admin@wsei.edu.pl",
+        NormalizedUserName = "ADMIN@WSEI.EDU.PL",
+        Email = "admin@wsei.edu.pl",
+        NormalizedEmail = "ADMIN@WSEI.EDU.PL",
+        FirstName = "Admin",
+        LastName = "User",
+        FullName = "Admin User",
+        Department = "IT",
+        Status = SystemUserStatus.Active,
+        CreatedAt = staticDate,
+        EmailConfirmed = true,
+        PasswordHash = new PasswordHasher<CrmUser>().HashPassword(null!, "Admin123!")
+    });
+}
 }

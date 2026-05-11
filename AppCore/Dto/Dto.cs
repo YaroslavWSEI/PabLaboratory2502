@@ -29,6 +29,7 @@
         public string FirstName { get; init; }
         public string LastName { get; init; }
         public string? Position { get; init; }
+        public string? Pesel { get; init; }
         public DateTime? BirthDate { get; init; }
         public Gender Gender { get; init; }
         public Guid? EmployerId { get; init; }
@@ -40,6 +41,7 @@
             FirstName = p.FirstName,
             LastName = p.LastName,
             Email = p.Email,
+            Pesel = p.Pesel?.Value,
             Phone = p.Phone,
             Gender = p.Gender,
             EmployerId = p.EmployerId,
@@ -61,6 +63,7 @@
         string LastName,
         string Email,
         string Phone,
+        string? Pesel,
         string? Position,
         DateTime? BirthDate,
         Gender Gender,
@@ -74,6 +77,7 @@
         string? LastName,
         string? Email,
         string? Phone,
+        string? Pesel,
         string? Position,
         DateTime? BirthDate,
         Gender? Gender,

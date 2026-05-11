@@ -5,6 +5,7 @@
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::D69398D9-4F9E-4A76-9043-3D456923C1B7::net9.0::QuizApiGetRequestTest.GetShouldReturnOkStatus&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;xUnit::D69398D9-4F9E-4A76-9043-3D456923C1B7::net9.0::QuizApiGetRequestTest.GetShouldReturnQuizzes&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::D69398D9-4F9E-4A76-9043-3D456923C1B7::net9.0::PeselTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	</wpf:ResourceDictionary>

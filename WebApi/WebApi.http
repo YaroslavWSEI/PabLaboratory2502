@@ -1,6 +1,6 @@
 @WebApi_HostAddress = http://localhost:5204
 ### 🔑 TOKEN (WSTAW PO LOGINIE)
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjkzQTdGRkRELTA1N0YtNDAyMS05QzY4LUZFMDY5NTFGRkE2NSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Imphbi5rb3dhbHNraUBjcm0ucGwiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9naXZlbm5hbWUiOiJKYW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zdXJuYW1lIjoiS293YWxza2kiLCJkZXBhcnRtZW50IjoiU2FsZXMiLCJzdGF0dXMiOiJBY3RpdmUiLCJqdGkiOiIzN2IzZDgzMS1hZTRiLTQ3NDYtYjQ5Ni1kMGU3ZTJmMjk4MmQiLCJpYXQiOiIxNzc2ODE3MzMzIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiU2FsZXNNYW5hZ2VyIiwiZXhwIjoxNzc2ODIwOTMzLCJpc3MiOiJJZGVpc0NybUFwaSIsImF1ZCI6IkNybUNsaWVudCJ9.k7tyULQVawojI7vFPgQtQb3WHUyFkp-wj3DRFDu3Ikk
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjkzQTdGRkRELTA1N0YtNDAyMS05QzY4LUZFMDY5NTFGRkE2NSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Imphbi5rb3dhbHNraUBjcm0ucGwiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9naXZlbm5hbWUiOiJKYW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zdXJuYW1lIjoiS293YWxza2kiLCJkZXBhcnRtZW50IjoiU2FsZXMiLCJzdGF0dXMiOiJBY3RpdmUiLCJqdGkiOiI4YjlkYTU4My00MzYyLTRjMjMtOGE2NC1hMGNlMjI4ZTllZjQiLCJpYXQiOiIxNzc4NTIyMzI3IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiU2FsZXNNYW5hZ2VyIiwiZXhwIjoxNzc4NTI1OTI3LCJpc3MiOiJJZGVpc0NybUFwaSIsImF1ZCI6IkNybUNsaWVudCJ9.ieabkDMPKy587hd_uohy-ud9QTcIwOEnyNaa8aM_iW4
 
 ### 🧾 TEST ID (POBIERZ Z BAZY LUB LOGINU)
 @id = 75295f68-1f34-4649-925f-e29224df4233
@@ -105,3 +105,56 @@ Authorization: Bearer {{token}}
 {
   "content": "Test error"
 }
+
+### 🟢 POST create with PESEL (SUCCESS)
+POST {{WebApi_HostAddress}}/api/contacts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "firstName": "Piotr",
+  "lastName": "Zieliński",
+  "email": "piotr@wsei.edu.pl",
+  "phone": "555666777",
+  "pesel": "44051401359",
+  "gender": 0,
+  "address": {
+    "street": "Krakowska 10",
+    "city": "Kraków",
+    "postalCode": "31-001",
+    "country": "Poland",
+    "type": 0
+  }
+}
+
+### ❌ POST create with INVALID PESEL (FAILURE)
+POST {{WebApi_HostAddress}}/api/contacts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "firstName": "Błąd",
+  "lastName": "Pesel",
+  "email": "error@test.pl",
+  "phone": "000000000",
+  "pesel": "123",
+  "gender": 0
+}
+### 🔎 SEARCH by Email Domain
+GET {{WebApi_HostAddress}}/api/contacts/search?emailDomain=wsei.edu.pl
+Accept: application/json
+Authorization: Bearer {{token}}
+### 🔗 ПРИВЯЗКА АДАМА К ОРГАНИЗАЦИИ
+# Замени {{personId}} на ID Адама (3D54091D-ABC8-49EC-9590-93AD3ED5458F)
+PATCH {{WebApi_HostAddress}}/api/contacts/3D54091D-ABC8-49EC-9590-93AD3ED5458F/assign-organization/6B88CBAA-D367-4E48-83C1-01C89942B5FC
+Authorization: Bearer {{token}}
+
+
+### 🔎 ПОИСК ПО ID ОРГАНИЗАЦИИ
+GET {{WebApi_HostAddress}}/api/contacts/search?organizationId=6B88CBAA-D367-4E48-83C1-01C89942B5FC
+Authorization: Bearer {{token}}
+
+### 🗑️ DELETE contact
+DELETE {{WebApi_HostAddress}}/api/contacts/{{id}}
+Authorization: Bearer {{token}}
+

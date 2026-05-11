@@ -55,25 +55,6 @@ namespace Infrastructure.Migrations
                     b.HasDiscriminator<string>("ContactType").HasValue("Contact");
 
                     b.UseTphMappingStrategy();
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("516a34d7-ccfb-4f20-85f3-62bd0f3af271"),
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "biuro@wsei.edu.pl",
-                            Phone = "123567123",
-                            Status = "Active"
-                        },
-                        new
-                        {
-                            Id = new Guid("3d54091d-abc8-49ec-9590-93ad3ed5458f"),
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "adam@wsei.edu.pl",
-                            Phone = "123456789",
-                            Status = "Active",
-                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("AppCore.Models.Note", b =>
@@ -264,7 +245,7 @@ namespace Infrastructure.Migrations
                         {
                             Id = "b2c3d4e5-f6a7-4b5c-9d8e-1f2a3b4c5d6e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "700750e9-a61e-4b48-a569-92f78107a160",
+                            ConcurrencyStamp = "f95d3081-22ca-4ab8-9ff7-2fa1aa4bc362",
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Department = "IT",
                             Email = "admin@wsei.edu.pl",
@@ -275,9 +256,9 @@ namespace Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@WSEI.EDU.PL",
                             NormalizedUserName = "ADMIN@WSEI.EDU.PL",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEa7xQkDQpeiKTZuQfskIdMF9ABqnYxQnvI+KLqDO5cH6s2lftDq+/Hwkr1pMQ/8Ag==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIJIhfZ7qIcwsIlblKlZa3YUoX2LZ4YYeaRMtSZywWGVdk5U1aTXZU1L+fQSCNsqAg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "44936f83-69f3-4b8a-825f-4c71bf0bffb6",
+                            SecurityStamp = "d17d9571-634a-4819-ad3a-1ee39404ace7",
                             Status = 0,
                             TwoFactorEnabled = false,
                             UserName = "admin@wsei.edu.pl"
@@ -441,6 +422,17 @@ namespace Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasDiscriminator().HasValue("Company");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("6b88cbaa-d367-4e48-83c1-01c89942b5fc"),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "biuro@wsei.edu.pl",
+                            Phone = "123567123",
+                            Status = "Active",
+                            Name = ""
+                        });
                 });
 
             modelBuilder.Entity("AppCore.Models.Organization", b =>
@@ -491,6 +483,10 @@ namespace Infrastructure.Migrations
                     b.Property<Guid?>("OrganizationId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Pesel")
+                        .HasMaxLength(11)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Position")
                         .HasColumnType("TEXT");
 
@@ -499,6 +495,21 @@ namespace Infrastructure.Migrations
                     b.HasIndex("OrganizationId");
 
                     b.HasDiscriminator().HasValue("Person");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("3d54091d-abc8-49ec-9590-93ad3ed5458f"),
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "adam@wsei.edu.pl",
+                            Phone = "123456789",
+                            Status = "Active",
+                            UpdatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BirthDate = new DateTime(2001, 1, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FirstName = "Adam",
+                            Gender = "Male",
+                            LastName = "Nowak"
+                        });
                 });
 
             modelBuilder.Entity("AppCore.Models.Contact", b =>

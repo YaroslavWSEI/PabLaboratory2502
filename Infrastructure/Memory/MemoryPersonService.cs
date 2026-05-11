@@ -132,4 +132,42 @@ public class MemoryPersonService : IPersonService
 
         return PersonDto.FromEntity(person);
     }
+    public async Task<List<PersonDto>> SearchPeople(string? emailDomain, Guid? organizationId)
+    {
+        // Получаем всех людей из репозитория
+        var allPersons = await _unitOfWork.Persons.FindAllAsync();
+        var query = allPersons.AsQueryable();
+
+        // Фильтр по домену email
+        if (!string.IsNullOrEmpty(emailDomain))
+        {
+            query = query.Where(p => p.Email.EndsWith("@" + emailDomain, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // Фильтр по организации
+        if (organizationId.HasValue && organizationId.Value != Guid.Empty)
+        {
+            query = query.Where(p => p.OrganizationId == organizationId);
+        }
+
+        // Возвращаем результат в виде списка DTO
+        return query.Select(PersonDto.FromEntity).ToList();
+    }
+    public async Task<bool> AssignToOrganization(Guid personId, Guid organizationId)
+    {
+        var person = await _unitOfWork.Persons.FindByIdAsync(personId);
+        if (person == null) return false;
+
+        person.OrganizationId = organizationId;
+        await _unitOfWork.Persons.UpdateAsync(person);
+        await _unitOfWork.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task DeleteContact(Guid id)
+    {
+        // Используем тот же метод, что и в основном сервисе
+        await _unitOfWork.Persons.RemoveByIdAsync(id);
+        await _unitOfWork.SaveChangesAsync();
+    }
 }

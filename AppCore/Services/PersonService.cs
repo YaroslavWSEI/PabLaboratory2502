@@ -36,6 +36,7 @@ public class PersonService : IPersonService
             FirstName = dto.FirstName,
             LastName = dto.LastName,
             Email = dto.Email,
+            Pesel = !string.IsNullOrEmpty(dto.Pesel) ? new Pesel(dto.Pesel) : null,
             Phone = dto.Phone,
             BirthDate = dto.BirthDate,
             Gender = dto.Gender,
@@ -110,7 +111,7 @@ public class PersonService : IPersonService
         var entity = await _unitOfWork.Persons.FindByIdAsync(id);
         return entity == null ? null : PersonDto.FromEntity(entity);
     }
-
+    
     public async Task<PersonDto> GetPerson(Guid personId)
     {
         var entity = await _unitOfWork.Persons.FindByIdAsync(personId);
@@ -143,5 +144,53 @@ public class PersonService : IPersonService
         await _unitOfWork.SaveChangesAsync();
 
         return note;
+    }
+    public async Task<List<PersonDto>> SearchPeople(string? emailDomain, Guid? organizationId)
+    {
+        // В Unit of Work обычно есть доступ к репозиториям. 
+        // Используем FindAllAsync или создаем специальный метод в репозитории.
+        // Для простоты выгрузим список и отфильтруем (или добавь фильтрацию в репозиторий)
+        var allPersons = await _unitOfWork.Persons.FindAllAsync();
+        var query = allPersons.AsQueryable();
+
+        // 1. Фильтр по домену почты
+        if (!string.IsNullOrEmpty(emailDomain))
+        {
+            query = query.Where(p => p.Email.EndsWith("@" + emailDomain, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // 2. Фильтр по организации
+        if (organizationId.HasValue && organizationId.Value != Guid.Empty)
+        {
+            query = query.Where(p => p.OrganizationId == organizationId);
+        }
+
+        // 3. Маппинг через твой существующий метод FromEntity
+        return query.Select(PersonDto.FromEntity).ToList();
+    }
+    public async Task<bool> AssignToOrganization(Guid personId, Guid organizationId)
+    {
+        var person = await _unitOfWork.Persons.FindByIdAsync(personId);
+        // Проверяем, существует ли организация (опционально, зависит от репозитория)
+        // var org = await _unitOfWork.Organizations.FindByIdAsync(organizationId); 
+
+        if (person == null) return false;
+
+        person.OrganizationId = organizationId;
+        person.UpdatedAt = DateTime.UtcNow;
+
+        await _unitOfWork.Persons.UpdateAsync(person);
+        await _unitOfWork.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task DeleteContact(Guid id)
+    {
+        var contact = await _unitOfWork.Persons.FindByIdAsync(id);
+        if (contact != null)
+        {
+            await _unitOfWork.Persons.RemoveByIdAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 }

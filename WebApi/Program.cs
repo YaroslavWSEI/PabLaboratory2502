@@ -19,7 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // =========================
-// JWT AUTH (TO BYŁO BRAKUJĄCE)
+// JWT AUTH 
 // =========================
 
 // =========================
