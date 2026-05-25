@@ -9,11 +9,10 @@ public class CrmUser : IdentityUser, ISystemUser
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
 
-    // ✅ computed property – safe for EF + Identity + seed
     public string FullName
     {
         get => $"{FirstName} {LastName}";
-        set { } // EF wymaga setter-a, nawet pustego
+        set { } 
     }
 
     public required string Department { get; set; }

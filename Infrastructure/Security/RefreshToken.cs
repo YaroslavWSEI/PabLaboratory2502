@@ -3,8 +3,6 @@
 public class RefreshToken
 {
     public Guid Id { get; init; } = Guid.NewGuid();
-
-    // FK do Identity usera
     public string UserId { get; init; } = string.Empty;
 
     public string Token { get; init; } = string.Empty;

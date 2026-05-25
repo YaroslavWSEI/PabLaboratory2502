@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace WebAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")] // Это создаст маршрут /api/quizzes
-[Authorize] // Требует авторизацию (которую мы обходим в тестах через TestAuthHandler)
+[Route("api/[controller]")]
+[Authorize]
 public class QuizzesController : ControllerBase
 {
     private readonly QuizDbContext _context;
@@ -21,10 +21,9 @@ public class QuizzesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<QuizEntity>>> GetQuizzes()
     {
-        // Возвращаем список всех квизов из базы данных
         var quizzes = await _context.Quizzes
-            .Include(q => q.Items) // Подгружаем вопросы
-            .ThenInclude(i => i.IncorrectAnswers) // Подгружаем варианты ответов
+            .Include(q => q.Items)
+            .ThenInclude(i => i.IncorrectAnswers)
             .ToListAsync();
 
         return Ok(quizzes);

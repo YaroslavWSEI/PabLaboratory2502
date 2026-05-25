@@ -147,33 +147,21 @@ public class PersonService : IPersonService
     }
     public async Task<List<PersonDto>> SearchPeople(string? emailDomain, Guid? organizationId)
     {
-        // В Unit of Work обычно есть доступ к репозиториям. 
-        // Используем FindAllAsync или создаем специальный метод в репозитории.
-        // Для простоты выгрузим список и отфильтруем (или добавь фильтрацию в репозиторий)
         var allPersons = await _unitOfWork.Persons.FindAllAsync();
         var query = allPersons.AsQueryable();
-
-        // 1. Фильтр по домену почты
         if (!string.IsNullOrEmpty(emailDomain))
         {
             query = query.Where(p => p.Email.EndsWith("@" + emailDomain, StringComparison.OrdinalIgnoreCase));
         }
-
-        // 2. Фильтр по организации
         if (organizationId.HasValue && organizationId.Value != Guid.Empty)
         {
             query = query.Where(p => p.OrganizationId == organizationId);
         }
-
-        // 3. Маппинг через твой существующий метод FromEntity
         return query.Select(PersonDto.FromEntity).ToList();
     }
     public async Task<bool> AssignToOrganization(Guid personId, Guid organizationId)
     {
         var person = await _unitOfWork.Persons.FindByIdAsync(personId);
-        // Проверяем, существует ли организация (опционально, зависит от репозитория)
-        // var org = await _unitOfWork.Organizations.FindByIdAsync(organizationId); 
-
         if (person == null) return false;
 
         person.OrganizationId = organizationId;

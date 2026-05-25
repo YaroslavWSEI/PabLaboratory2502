@@ -20,16 +20,11 @@ public class IdentityDbSeeder : IDataSeeder
         _roleManager = roleManager;
         _logger = logger;
     }
-
-    // metoda interfejsowa
     public async Task SeedAsync()
     {
         await SeedRolesAsync();
         await SeedUsersAsync();
     }
-
-    // ── Role ──────────────────────────────────────────────
-    // metoda dodająca role
     private async Task SeedRolesAsync()
     {
         var roles = new[]
@@ -48,7 +43,6 @@ public class IdentityDbSeeder : IDataSeeder
 
         foreach (var role in roles)
         {
-            // pomijamy tworznie roli, jeśli już istnieje
             if (await _roleManager.RoleExistsAsync(role.Name!))
                 continue;
 
@@ -59,9 +53,6 @@ public class IdentityDbSeeder : IDataSeeder
                     role.Name, FormatErrors(result));
         }
     }
-
-    // ── Użytkownicy ───────────────────────────────────────
-    // metoda dodająca użytkowników
     private async Task SeedUsersAsync()
     {
         var users = new[]
@@ -125,9 +116,6 @@ public class IdentityDbSeeder : IDataSeeder
         foreach (var seedUser in users)
             await CreateUserAsync(seedUser);
     }
-    
-    
-    // Metoda pomocnicza, która 
     private async Task CreateUserAsync(SeedUser seedUser)
     {
         if (await _userManager.FindByEmailAsync(seedUser.Email) is not null)
@@ -136,26 +124,17 @@ public class IdentityDbSeeder : IDataSeeder
                 "Użytkownik {Email} już istnieje — pomijam.", seedUser.Email);
             return;
         }
-
-        // ✅ Poprawne tworzenie encji CrmUser
-        // Ustawiamy tylko właściwości które znamy —
-        // UserManager uzupełni resztę automatycznie
         var user = new CrmUser
         {
-            // Stałe Id — powtarzalne między uruchomieniami
-            // UserManager nie nadpisze Id jeśli jest już ustawione
             Id = seedUser.Id,
             UserName = seedUser.Email,
             NormalizedEmail = seedUser.Email.ToUpper(),
             Email = seedUser.Email,
             FullName = $"{seedUser.FirstName} {seedUser.LastName}",
-            // Potwierdzenie emaila — seed omija weryfikację emaila
             EmailConfirmed = true,
-            // Odblokowane konto od razu
             LockoutEnabled = true,
             LockoutEnd = null,
             AccessFailedCount = 0,
-            // Wymagane dla 2FA — domyślnie wyłączone
             TwoFactorEnabled = false,
             PhoneNumberConfirmed = false,
             FirstName = seedUser.FirstName,
@@ -165,8 +144,6 @@ public class IdentityDbSeeder : IDataSeeder
         };
 
         user.Activate();
-
-        // ✅ CreateAsync — hashuje hasło i uzupełnia wszystkie brakujące pola
         var createResult = await _userManager.CreateAsync(user, seedUser.Password);
         if (!createResult.Succeeded)
         {
@@ -175,8 +152,6 @@ public class IdentityDbSeeder : IDataSeeder
                 user.Email, createResult);
             return;
         }
-
-        // ✅ AddToRoleAsync — po CreateAsync, gdy użytkownik istnieje już w bazie
         var roleResult = await _userManager
             .AddToRoleAsync(user, seedUser.Role.ToString());
 
@@ -196,9 +171,6 @@ public class IdentityDbSeeder : IDataSeeder
     private static string FormatErrors(IdentityResult result) =>
         string.Join("; ", result.Errors.Select(e => e.Description));
 }
-
-// Rekord pomocniczy — dane seedowanego użytkownika, które możemy jawnie zainicjować
-// klasy zarządzające z modułu Identity uzupełniają automacznie pozostałe właściwości
 internal record SeedUser(
     string Id,
     string Email,

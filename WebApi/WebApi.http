@@ -1,112 +1,30 @@
 @WebApi_HostAddress = http://localhost:5204
-### 🔑 TOKEN (WSTAW PO LOGINIE)
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjkzQTdGRkRELTA1N0YtNDAyMS05QzY4LUZFMDY5NTFGRkE2NSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Imphbi5rb3dhbHNraUBjcm0ucGwiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9naXZlbm5hbWUiOiJKYW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zdXJuYW1lIjoiS293YWxza2kiLCJkZXBhcnRtZW50IjoiU2FsZXMiLCJzdGF0dXMiOiJBY3RpdmUiLCJqdGkiOiI4YjlkYTU4My00MzYyLTRjMjMtOGE2NC1hMGNlMjI4ZTllZjQiLCJpYXQiOiIxNzc4NTIyMzI3IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiU2FsZXNNYW5hZ2VyIiwiZXhwIjoxNzc4NTI1OTI3LCJpc3MiOiJJZGVpc0NybUFwaSIsImF1ZCI6IkNybUNsaWVudCJ9.ieabkDMPKy587hd_uohy-ud9QTcIwOEnyNaa8aM_iW4
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjkzQTdGRkRELTA1N0YtNDAyMS05QzY4LUZFMDY5NTFGRkE2NSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Imphbi5rb3dhbHNraUBjcm0ucGwiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9naXZlbm5hbWUiOiJKYW4iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zdXJuYW1lIjoiS293YWxza2kiLCJkZXBhcnRtZW50IjoiU2FsZXMiLCJzdGF0dXMiOiJBY3RpdmUiLCJqdGkiOiJkMDk4NzM1Yy0wMGNiLTRkMjQtYjQ2YS04MWI2NzdiMzM0ZTciLCJpYXQiOiIxNzc5NzM0NzQ3IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiU2FsZXNNYW5hZ2VyIiwiZXhwIjoxNzc5NzM4MzQ3LCJpc3MiOiJJZGVpc0NybUFwaSIsImF1ZCI6IkNybUNsaWVudCJ9.SzHYggXaSgk3f-A6tg6RIUUW76-0X_LDRP1Z93MkkT4
 
-### 🧾 TEST ID (POBIERZ Z BAZY LUB LOGINU)
-@id = 75295f68-1f34-4649-925f-e29224df4233
-### 🔐 LOGIN (JWT)
+@personId = 3D54091D-ABC8-49EC-9590-93AD3ED5458F
+@orgId    = bc5e735b-e9d2-4262-9311-e237a24f336d
+
+### 🔐 LOGIN
 POST {{WebApi_HostAddress}}/api/auth/login
 Content-Type: application/json
 
-{
-  "email": "jan.kowalski@crm.pl",
-  "password": "Manager@123!"
-}
+{ "email": "jan.kowalski@crm.pl", "password": "Manager@123!" }
 
 ###
 
-### 🟢 GET contacts (READ ONLY - WYMAGA TOKENA)
-GET {{WebApi_HostAddress}}/api/contacts
-Accept: application/json
+# ══════════════════════════════════════════
+#  PERSONS  (api/contacts — unchanged)
+# ══════════════════════════════════════════
+
+### 🟢 GET all persons (paged)
+GET {{WebApi_HostAddress}}/api/contacts?page=1&size=10
 Authorization: Bearer {{token}}
 
-###
-
-### 🟢 POST create (SALES ACCESS - WYMAGA TOKENA)
-POST {{WebApi_HostAddress}}/api/contacts
-Content-Type: application/json
+### 🔎 GET person by ID
+GET {{WebApi_HostAddress}}/api/contacts/{{personId}}
 Authorization: Bearer {{token}}
 
-{
-  "firstName": "Jan",
-  "lastName": "Kowalski",
-  "email": "jan@test.pl",
-  "phone": "123456789",
-  "gender": 0,
-  "status": 0,
-  "employerId": null,
-  "address": {
-    "street": "Testowa 1",
-    "city": "Warszawa",
-    "postalCode": "00-001",
-    "country": "PL",
-    "type": 0
-  }
-}
-
-###
-
-### 🔎 GET by ID
-GET {{WebApi_HostAddress}}/api/contacts/{{id}}
-Accept: application/json
-Authorization: Bearer {{token}}
-
-###
-
-### ✏️ PUT update
-PUT {{WebApi_HostAddress}}/api/contacts/{{id}}
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-  "id": "{{id}}",
-  "firstName": "Jan",
-  "lastName": "Kowalski",
-  "email": "adam@wsei.edu.pl",
-  "phone": "123456789"
-}
-
-###
-
-### ❌ validation test
-POST {{WebApi_HostAddress}}/api/contacts
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-  "firstName": "123"
-}
-
-###
-
-### 📝 ADD NOTE
-POST {{WebApi_HostAddress}}/api/contacts/{{id}}/notes
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-  "content": "Moja pierwsza notatka"
-}
-
-###
-
-### 📄 GET NOTES
-GET {{WebApi_HostAddress}}/api/contacts/{{id}}/notes
-Accept: application/json
-Authorization: Bearer {{token}}
-
-###
-
-### ❌ ERROR TEST (invalid ID)
-POST {{WebApi_HostAddress}}/api/contacts/11111111-1111-1111-1111-111111111111/notes
-Content-Type: application/json
-Authorization: Bearer {{token}}
-
-{
-  "content": "Test error"
-}
-
-### 🟢 POST create with PESEL (SUCCESS)
+### 🟢 CREATE person (valid PESEL)
 POST {{WebApi_HostAddress}}/api/contacts
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -122,12 +40,12 @@ Authorization: Bearer {{token}}
     "street": "Krakowska 10",
     "city": "Kraków",
     "postalCode": "31-001",
-    "country": "Poland",
+    "country": "PL",
     "type": 0
   }
 }
 
-### ❌ POST create with INVALID PESEL (FAILURE)
+### ❌ CREATE person (invalid PESEL — expects 400)
 POST {{WebApi_HostAddress}}/api/contacts
 Content-Type: application/json
 Authorization: Bearer {{token}}
@@ -140,21 +58,107 @@ Authorization: Bearer {{token}}
   "pesel": "123",
   "gender": 0
 }
-### 🔎 SEARCH by Email Domain
+
+### ✏️ UPDATE person
+PUT {{WebApi_HostAddress}}/api/contacts/{{personId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "{{personId}}",
+  "firstName": "Adam",
+  "lastName": "Nowak",
+  "email": "adam@wsei.edu.pl",
+  "phone": "123456789"
+}
+
+### 🔗 ASSIGN person to organization (via contacts controller)
+PATCH {{WebApi_HostAddress}}/api/contacts/{{personId}}/assign-organization/{{orgId}}
+Authorization: Bearer {{token}}
+
+### 🔎 SEARCH persons by email domain
 GET {{WebApi_HostAddress}}/api/contacts/search?emailDomain=wsei.edu.pl
-Accept: application/json
-Authorization: Bearer {{token}}
-### 🔗 ПРИВЯЗКА АДАМА К ОРГАНИЗАЦИИ
-# Замени {{personId}} на ID Адама (3D54091D-ABC8-49EC-9590-93AD3ED5458F)
-PATCH {{WebApi_HostAddress}}/api/contacts/3D54091D-ABC8-49EC-9590-93AD3ED5458F/assign-organization/6B88CBAA-D367-4E48-83C1-01C89942B5FC
 Authorization: Bearer {{token}}
 
-
-### 🔎 ПОИСК ПО ID ОРГАНИЗАЦИИ
-GET {{WebApi_HostAddress}}/api/contacts/search?organizationId=6B88CBAA-D367-4E48-83C1-01C89942B5FC
+### 🔎 SEARCH persons by organization membership
+GET {{WebApi_HostAddress}}/api/contacts/search?organizationId={{orgId}}
 Authorization: Bearer {{token}}
 
-### 🗑️ DELETE contact
-DELETE {{WebApi_HostAddress}}/api/contacts/{{id}}
+### 📝 ADD note to person
+POST {{WebApi_HostAddress}}/api/contacts/{{personId}}/notes
+Content-Type: application/json
 Authorization: Bearer {{token}}
 
+{ "content": "Pierwsza notatka" }
+
+### 📄 GET notes for person
+GET {{WebApi_HostAddress}}/api/contacts/{{personId}}/notes
+Authorization: Bearer {{token}}
+
+### 🗑️ DELETE person
+DELETE {{WebApi_HostAddress}}/api/contacts/{{personId}}
+Authorization: Bearer {{token}}
+
+### 🏢 GET all organizations (paged)
+GET {{WebApi_HostAddress}}/api/organizations?page=1&size=10
+Authorization: Bearer {{token}}
+
+### 🔎 GET organization by ID (includes members)
+GET {{WebApi_HostAddress}}/api/organizations/{{orgId}}
+Authorization: Bearer {{token}}
+
+### 👥 GET members of organization
+GET {{WebApi_HostAddress}}/api/organizations/{{orgId}}/members
+Authorization: Bearer {{token}}
+
+### 🔎 SEARCH organizations by name
+GET {{WebApi_HostAddress}}/api/organizations/search?name=WSEI
+Authorization: Bearer {{token}}
+
+### 🔎 SEARCH organizations by email domain
+GET {{WebApi_HostAddress}}/api/organizations/search?emailDomain=wsei.edu.pl
+Authorization: Bearer {{token}}
+
+### 🟢 CREATE organization
+POST {{WebApi_HostAddress}}/api/organizations
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "WSEI Uczelnia",
+  "email": "kontakt@wsei.edu.pl",
+  "phone": "123000000",
+  "registrationNumber": "0000123456",
+  "type": 0,
+  "address": {
+    "street": "Ul. Filipa 17",
+    "city": "Kraków",
+    "postalCode": "31-150",
+    "country": "PL",
+    "type": 1
+  }
+}
+
+### ✏️ UPDATE organization
+PUT {{WebApi_HostAddress}}/api/organizations/{{orgId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "{{orgId}}",
+  "name": "WSEI Updated",
+  "email": "info@wsei.edu.pl",
+  "phone": "123000001"
+}
+
+### 🔗 ADD person as member of organization
+PATCH {{WebApi_HostAddress}}/api/organizations/{{orgId}}/members/{{personId}}
+Authorization: Bearer {{token}}
+
+### ❌ REMOVE person from organization
+DELETE {{WebApi_HostAddress}}/api/organizations/{{orgId}}/members/{{personId}}
+Authorization: Bearer {{token}}
+
+### 🗑️ DELETE organization
+DELETE {{WebApi_HostAddress}}/api/organizations/{{orgId}}
+Authorization: Bearer {{token}}

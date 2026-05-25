@@ -58,8 +58,6 @@ public class AuthService : IAuthService
     {
         return RefreshTokenAsync(dto);
     }
-
-    // ───────── REFRESH ─────────
     public async Task<AuthResponseDto> RefreshTokenAsync(RefreshTokenDto dto)
     {
         var principal = GetPrincipalFromExpiredToken(dto.AccessToken);
@@ -86,9 +84,6 @@ public class AuthService : IAuthService
 
         return newResponse;
     }
-
-    // ───────── REVOKE ─────────
-
     public async Task RevokeTokenAsync(string refreshToken)
     {
         var token = await _context.RefreshTokens
@@ -101,8 +96,6 @@ public class AuthService : IAuthService
         token.Revoke();
         await _context.SaveChangesAsync();
     }
-
-    // ───────── JWT + RESPONSE ─────────
     private async Task<AuthResponseDto> GenerateAuthResponseAsync(CrmUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);
@@ -127,8 +120,6 @@ public class AuthService : IAuthService
             }
         };
     }
-
-    // ───────── ACCESS TOKEN ─────────
     private string GenerateAccessToken(CrmUser user, IList<string> roles)
     {
         var claims = new List<Claim>
@@ -159,8 +150,6 @@ public class AuthService : IAuthService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-
-    // ───────── REFRESH TOKEN ─────────
     private async Task<RefreshToken> GenerateRefreshTokenAsync(string userId)
     {
         var activeTokens = await _context.RefreshTokens
@@ -182,8 +171,6 @@ public class AuthService : IAuthService
 
         return refreshToken;
     }
-
-    // ───────── VALIDATE EXPIRED TOKEN ─────────
     private ClaimsPrincipal GetPrincipalFromExpiredToken(string accessToken)
     {
         var parameters = new TokenValidationParameters

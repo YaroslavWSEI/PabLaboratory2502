@@ -26,19 +26,14 @@ public class ContactsDbContext : IdentityDbContext<CrmUser, CrmRole, string>
     {
         if (!optionsBuilder.IsConfigured)
         {
-            // Pointing to the specific folder to keep things organized
             optionsBuilder.UseSqlite("Data Source=contacts.db");
         }
-        
-        // This stops EF from panicking about the dynamic PasswordHash salt
         optionsBuilder.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder); 
-
-        // 1. Identity Configuration
         builder.Entity<CrmUser>(entity =>
         {
             entity.Property(u => u.FirstName).HasMaxLength(100);
@@ -69,8 +64,6 @@ public class ContactsDbContext : IdentityDbContext<CrmUser, CrmRole, string>
                 a.Property(ad => ad.Street).HasMaxLength(200);
             });
         });
-
-        // 3. Person Configuration
         builder.Entity<Person>(entity =>
         {
             entity.Property(p => p.BirthDate).HasColumnType("date");
@@ -82,8 +75,6 @@ public class ContactsDbContext : IdentityDbContext<CrmUser, CrmRole, string>
                     v => new Pesel(v))
                 .HasMaxLength(11);
         });
-
-        // 4. Global Relationships
         builder.Entity<Person>()
             .HasOne(p => p.Employer)
             .WithMany(e => e.Employees)
@@ -94,8 +85,6 @@ public class ContactsDbContext : IdentityDbContext<CrmUser, CrmRole, string>
             .HasMany(o => o.Members)
             .WithOne(p => p.Organization)
             .HasForeignKey(p => p.OrganizationId);
-
-        // 5. Seed Data (Hierarchical Order)
         SeedData(builder);
     }
 
@@ -107,8 +96,6 @@ public class ContactsDbContext : IdentityDbContext<CrmUser, CrmRole, string>
     var adminUserId = Guid.Parse("B2C3D4E5-F6A7-4B5C-9D8E-1F2A3B4C5D6E").ToString();
     
     var staticDate = new DateTime(2024, 1, 1);
-
-    // 1. СНАЧАЛА РОЛИ (нет зависимостей)
     builder.Entity<CrmRole>().HasData(new CrmRole
     {
         Id = adminRoleId,
@@ -116,8 +103,6 @@ public class ContactsDbContext : IdentityDbContext<CrmUser, CrmRole, string>
         NormalizedName = "ADMINISTRATOR",
         Description = "System Administrator"
     });
-
-    // 2. СНАЧАЛА КОМПАНИЯ (родитель для Person)
     builder.Entity<Company>().HasData(new Company
     {
         Id = companyId,
@@ -126,8 +111,6 @@ public class ContactsDbContext : IdentityDbContext<CrmUser, CrmRole, string>
         Status = ContactStatus.Active,
         CreatedAt = staticDate
     });
-
-    // 3. ТЕПЕРЬ PERSON (зависит от CompanyId)
     builder.Entity<Person>().HasData(new Person
     {
         Id = personId,
@@ -138,12 +121,9 @@ public class ContactsDbContext : IdentityDbContext<CrmUser, CrmRole, string>
         Gender = Gender.Male,
         Status = ContactStatus.Active,
         BirthDate = new DateTime(2001, 1, 11),
-        //EmployerId = companyId, // Теперь компания существует в БД, ошибки не будет
         CreatedAt = staticDate,
         UpdatedAt = staticDate
     });
-
-    // 4. ТЕПЕРЬ ADMIN USER (зависит от ролей/контактов, если есть связи)
     builder.Entity<CrmUser>().HasData(new CrmUser
     {
         Id = adminUserId,

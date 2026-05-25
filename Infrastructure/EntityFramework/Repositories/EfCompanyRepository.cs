@@ -11,7 +11,6 @@ public class EfCompanyRepository(ContactsDbContext context)
 {
     public async Task<Company?> GetByNipAsync(string nip)
     {
-        // Assuming you add a NIP property to Company model later
         return await context.Companies.FirstOrDefaultAsync(c => c.Email == nip); 
     }
 

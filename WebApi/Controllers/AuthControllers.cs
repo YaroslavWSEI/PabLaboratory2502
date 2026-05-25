@@ -15,8 +15,6 @@ public class AuthController : ControllerBase
 
     public AuthController(IAuthService authService) =>
         _authService = authService;
-
-    /// <summary>Logowanie — zwraca access token i refresh token.</summary>
     [HttpPost("login")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
@@ -26,8 +24,6 @@ public class AuthController : ControllerBase
         var result = await _authService.LoginAsync(dto);
         return Ok(result);
     }
-
-    /// <summary>Odświeżenie access tokenu.</summary>
     [HttpPost("refresh")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
@@ -37,8 +33,6 @@ public class AuthController : ControllerBase
         var result = await _authService.RefreshTokenAsync(dto);
         return Ok(result);
     }
-
-    /// <summary>Wylogowanie — unieważnia refresh token.</summary>
     [HttpPost("revoke")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -47,8 +41,6 @@ public class AuthController : ControllerBase
         await _authService.RevokeTokenAsync(refreshToken);
         return NoContent();
     }
-
-    /// <summary>Dane zalogowanego użytkownika.</summary>
     [HttpGet("me")]
     [Authorize]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]

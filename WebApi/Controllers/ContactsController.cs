@@ -18,8 +18,6 @@ public class ContactsController : ControllerBase
     {
         _service = service;
     }
-    
-    // --- ПОИСК (Должен быть выше методов с {id}) ---
     [HttpGet("search")]
     [Authorize(Policy = nameof(CrmPolicies.ReadOnlyAccess))]
     public async Task<IActionResult> SearchPeople(
@@ -29,8 +27,6 @@ public class ContactsController : ControllerBase
         var result = await _service.SearchPeople(emailDomain, organizationId);
         return Ok(result);
     }
-
-    // --- ОСТАЛЬНЫЕ GET МЕТОДЫ ---
     [HttpGet]
     [Authorize(Policy = nameof(CrmPolicies.ReadOnlyAccess))]
     public async Task<IActionResult> GetAllPersons(int page = 1, int size = 10)
@@ -47,8 +43,6 @@ public class ContactsController : ControllerBase
         if (dto is null) return NotFound();
         return Ok(dto);
     }
-
-    // --- МЕТОДЫ МОДИФИКАЦИИ (POST/PUT/PATCH/DELETE) ---
     [HttpPost]
     [Authorize(Policy = nameof(CrmPolicies.SalesAccess))]
     public async Task<IActionResult> Create(CreatePersonDto dto)
@@ -61,7 +55,7 @@ public class ContactsController : ControllerBase
 
             return CreatedAtAction(nameof(GetPerson), new { id = result.Id }, result);
         }
-        catch (ArgumentException ex) // Ловим невалидный PESEL
+        catch (ArgumentException ex)
         {
             return BadRequest(ex.Message);
         }
@@ -92,8 +86,7 @@ public class ContactsController : ControllerBase
         await _service.DeleteContact(id); 
         return NoContent();
     }
-
-    // --- ЗАМЕТКИ ---
+    
     [HttpPost("{contactId:guid}/notes")]
     [Authorize(Policy = nameof(CrmPolicies.SupportAccess))]
     public async Task<IActionResult> AddNote([FromRoute] Guid contactId, [FromBody] CreateNoteDto dto)

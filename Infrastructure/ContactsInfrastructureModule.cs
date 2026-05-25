@@ -8,6 +8,7 @@ using Infrastructure.Entities;
 using Infrastructure.Repositories;
 using Infrastructure.Security;
 using Infrastructure.Seeders;
+using Infrastructure.Services;
 using Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -43,6 +44,7 @@ public static class ContactsInfrastructureModule
 
         services.AddScoped<IContactUnitOfWork, EfContactsUnitOfWork>();
         services.AddScoped<IPersonService, PersonService>();
+        services.AddScoped<IOrganizationService, OrganizationService>();
 
         services.AddScoped<IAuthService, AuthService>();
         
@@ -58,16 +60,12 @@ public static class ContactsInfrastructureModule
 
         return services;
     }
-
-    // =========================
-    // JWT CONFIG
-    // =========================
+    
    public static IServiceCollection AddJwt(this IServiceCollection services, JwtSettings jwtSettings)
 {
     services
         .AddAuthentication(options =>
         {
-            // WAŻNE: jeden default scheme
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         })
